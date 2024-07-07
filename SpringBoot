@@ -1,0 +1,200 @@
+•  What is Spring Boot and how is it different from the traditional Spring Framework?
+•	Spring Boot is an extension of the Spring framework that simplifies the setup and development of new Spring applications. It provides defaults for code and annotation configuration to quicken the setup and development process.
+•  What are the key features of Spring Boot?
+•	Autoconfiguration
+•	Standalone application
+•	rapid application development. [RAD]
+•	Production-ready features (such as metrics, health checks)
+•	Spring Boot Starter dependencies
+•	Embedded server support [TOMCAT]
+•  What is Spring Boot Starter?
+•	Spring Boot Starters are a set of convenient dependency descriptors you can include in your application. For example, spring-boot-starter-web for web applications and spring-boot-starter-data-jpa for JPA-based data access.
+•  How do you define properties in Spring Boot?
+•	Properties can be defined in application.properties or application.yml files. These files can contain various configuration settings for the application. Ex. Database connection string host,username, password 
+•  How does Spring Boot autoconfiguration work?
+•	Spring Boot’s autoconfiguration feature automatically configures your application based on the dependencies present in the classpath. It uses @EnableAutoConfiguration and conditionally applies configurations.
+•  What is Spring Boot Actuator?
+•	Spring Boot Actuator provides production-ready features such as monitoring and metrics gathering. It includes endpoints that can be used to monitor and manage your application.
+•  What is a Spring Boot Starter Parent?
+•	The Spring Boot Starter Parent is a special starter that provides useful Maven defaults. It simplifies the configuration of Maven projects by providing default configurations.
+•  What are Spring Boot Profiles?
+•	Spring Boot profiles provide a way to segregate parts of your application configuration and make it available only in certain environments.
+
+•  How do you handle exceptions in Spring Boot?
+•	Exceptions can be handled using @ControllerAdvice and @ExceptionHandler annotations. Additionally, Spring Boot provides ResponseEntityExceptionHandler to handle common exceptions.
+•  What is the role of @SpringBootApplication?
+•	Combination of 3 annotations 
+•	@SpringBootApplication is a convenience annotation that adds @Configuration, @EnableAutoConfiguration, and @ComponentScan annotations with their default attributes.
+Main Class -
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@SpringBootApplication
+public class TrekManagementApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(TrekManagementApplication.class, args);
+    }
+}
+
+
+
+
+
+@Configuration –
+o	 Purpose: Marks a class as a source of bean definitions for the application context.
+o	  Usage: Typically used to define beans using the @Bean annotation within the class
+@EnableAutoConfiguration
+•	Purpose: Enables Spring Boot’s auto-configuration mechanism, which attempts to automatically configure the application based on the dependencies that are present on the classpath.
+•	Usage: Usually used in the main application class to automatically configure your Spring application based on the jar dependencies present
+@ComponentScan
+•	Purpose: Configures component scanning directives for use with @Configuration classes. It tells Spring where to look for annotated components (@Component, @Service, @Repository, @Controller), thus enabling dependency injection.
+•	Usage: Specifies the base packages to scan for Spring components
+Ex. @ComponentScan(basePackages = "com.example.trekmanagement") // base package 
+Summery - 
+•	@Configuration: Marks the class as a source of bean definitions.
+•	@EnableAutoConfiguration: Enables Spring Boot’s auto-configuration mechanism.
+•	@ComponentScan: Enables component scanning in the package where the application is located and its sub-packages.
+This setup allows Spring Boot to automatically configure and scan for components, reducing the need for boilerplate configuration and enabling rapid application development.
+
+
+
+
+
+
+@RestController, Request Mapping, and Handling of Request and Response Data
+1. @RestController
+@RestController  @Controller + @ResponseBody
+The @RestController annotation is a specialized version of the @Controller annotation in Spring. It is used to create RESTful web services and is a shorthand for combining @Controller and @ResponseBody.
+•	Usage: @RestController is typically used at the class level to indicate that the class will handle REST API requests. It eliminates the need to add @ResponseBody to every method, as it is implicitly added to all methods in the class.
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@RestController
+public class TrekkerController {
+
+    @GetMapping("/trekkers")
+    public List<Trekker> getAllTrekkers() {
+        // Logic to get all trekkers
+        return trekkerService.findAll();
+    }
+}
+
+
+
+
+
+
+
+
+2. Request Mapping
+Request mapping in Spring is handled using annotations such as @RequestMapping, @GetMapping, @PostMapping, @PutMapping, and @DeleteMapping. These annotations are used to map HTTP requests to handler methods of MVC and REST controllers.
+•	@RequestMapping: A generic mapping annotation that can be used for any HTTP method. It can be used at both the class and method levels.
+
+@RestController
+@RequestMapping("/api/trekkers")
+public class TrekkerController {
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Trekker> getAllTrekkers() {
+        // Logic to get all trekkers
+        return trekkerService.findAll();
+    }
+}
+•	@GetMapping, @PostMapping, @PutMapping, @DeleteMapping: These are specialized forms of @RequestMapping for specific HTTP methods.
+
+@RestController
+@RequestMapping("/api/trekkers")
+public class TrekkerController {
+
+    @GetMapping
+    public List<Trekker> getAllTrekkers() {
+        // Logic to get all trekkers
+        return trekkerService.findAll();
+    }
+
+    @PostMapping
+    public Trekker createTrekker(@RequestBody Trekker trekker) {
+        // Logic to create a new trekker
+        return trekkerService.save(trekker);
+    }
+
+    @PutMapping("/{id}")
+    public Trekker updateTrekker(@PathVariable Long id, @RequestBody Trekker trekker) {
+        // Logic to update an existing trekker
+        return trekkerService.update(id, trekker);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteTrekker(@PathVariable Long id) {
+        // Logic to delete a trekker
+        trekkerService.delete(id);
+    }
+}
+3. Handling Request Data
+In Spring Boot, request data can be handled using several annotations:
+•	@PathVariable: Used to extract values from the URI path.
+@GetMapping("/{id}")
+public Trekker getTrekkerById(@PathVariable Long id) {
+    // Logic to get a trekker by ID
+    return trekkerService.findById(id);
+}
+•	@RequestParam: Used to extract query parameters from the URL.
+@GetMapping
+public List<Trekker> getTrekkersByAge(@RequestParam int age) {
+    // Logic to get trekkers by age
+    return trekkerService.findByAge(age);
+}
+•	@RequestBody: Used to map the body of the HTTP request to a Java object.
+@PostMapping
+public Trekker createTrekker(@RequestBody Trekker trekker) {
+    // Logic to create a new trekker
+    return trekkerService.save(trekker);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4. Handling Response Data
+Spring Boot handles response data using the same annotations mentioned above. The response data can be returned directly from the handler methods, and Spring Boot will automatically serialize it into the appropriate format (typically JSON).
+•	Returning Objects: By default, Spring Boot uses Jackson to convert Java objects into JSON.
+@GetMapping("/{id}")
+public Trekker getTrekkerById(@PathVariable Long id) {
+    // Logic to get a trekker by ID
+    return trekkerService.findById(id);
+}
+•	Using ResponseEntity: For more control over the response, such as setting HTTP status codes or headers, ResponseEntity can be used.
+java
+Copy code
+@GetMapping("/{id}")
+public ResponseEntity<Trekker> getTrekkerById(@PathVariable Long id) {
+    Trekker trekker = trekkerService.findById(id);
+    if (trekker != null) {
+        return new ResponseEntity<>(trekker, HttpStatus.OK);
+    } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+}
+In summary, @RestController simplifies the creation of RESTful services by eliminating the need for explicit @ResponseBody annotations. Request mapping annotations like @GetMapping, @PostMapping, etc., help map HTTP requests to specific handler methods, and Spring Boot provides powerful mechanisms to handle request and response data efficiently.
+
